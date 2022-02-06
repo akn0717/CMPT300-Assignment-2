@@ -1,0 +1,13 @@
+all: cshell
+
+cshell: cshell.o cshelllib.o
+	gcc -g -Wall -o cshell cshell.o cshelllib.o
+
+cshell.o: cshell.c
+	gcc -g -Wall -c cshell.c -ocshell.o
+
+cshelllib.o: cshelllib.c
+	gcc -g -Wall -c cshelllib.c -o cshelllib.o
+
+clean:
+	rm *.o cshell
