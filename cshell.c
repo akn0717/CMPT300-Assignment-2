@@ -8,5 +8,7 @@
 int main(int argc, char* argv[])
 {
     exiting();
+    printf("karim is testing");
     return 0;
+    // added a comment
 }
