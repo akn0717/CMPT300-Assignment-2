@@ -3,7 +3,7 @@
 #include "cshelllib.h"
 
 void exiting() {
-    printf("Hello\n");
+    printf("Bye!\n");
 }
 void logging() {}
 
