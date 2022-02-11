@@ -22,9 +22,20 @@ void theming() {}
 
 void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value)
 {
-    list[*size].name = name;
+    if (name!=NULL)
+    {
+        list[*size].name = (char*) malloc(sizeof(name) * sizeof(char));
+        strcpy(list[*size].name, name);
+    }
+
     list[*size].time = time;
-    list[*size].return_value = return_value;
+
+    if (return_value != NULL)
+    {
+        list[*size].return_value = (char*) malloc(sizeof(return_value) * sizeof(char));
+        strcpy(list[*size].return_value, return_value);
+    }
+
     ++(*size);
 };
 
@@ -37,5 +48,10 @@ void command_parsing(char *buffer, size_t *argc, char **argv)
         strcpy(argv[(*argc)], arg);
         arg = strtok(NULL, " ");
         ++(*argc);
+    }
+    int n = strlen(argv[(*argc)-1]);
+    for (int i=0;i<n;++i)
+    {
+        if (argv[(*argc)-1][i]=='\n') argv[(*argc)-1][i] = 0;
     }
 }
