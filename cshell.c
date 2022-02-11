@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <time.h>
-#include <stdlib.h>
-#include <string.h>
 #include "cshelllib.h"
 
 int main(int argc, char* argv[])
@@ -36,27 +30,32 @@ int main(int argc, char* argv[])
         buffer[0] = '\0';
         getline(&buffer, &buffer_size, stdin);
         
-        command_parsing(buffer, &command_argc, command_argv);
-
+        int parsing_error = command_parsing(buffer, &command_argc, command_argv);
+        printf("%s %s", command_argv[0],command_argv[1]);
+        time(&raw_time);
+        if (parsing_error)
+        {
+            printf("ERROR: Incorrect format for variable name!");
+            continue;
+        }
         if (!strcmp(command_argv[0],"exit"))
         {
-            time(&raw_time);
             exiting();
             return 0;
         }
+        else if (command_argv[0][0] == '$')
+        {
+            //variable_assigning();
+        }
         else if (!strcmp(command_argv[0], "log")) 
         {
-            time(&raw_time);
             logging();
         }
-        else if (!strcmp(command_argv[0], "print")) 
+        else if (!strcmp(command_argv[0], "print"))
         {
-            time(&raw_time);
-
         }
         else if (!strcmp(command_argv[0], "theme"))
         {
-            time(&raw_time);
         }
         else 
         {
@@ -66,16 +65,5 @@ int main(int argc, char* argv[])
         time_info = localtime(&raw_time);
         adding_log(list_command, &n_commands, command_argv[0], *time_info, return_value);
     }
-    for (int i=0;i<N_command_args;++i)
-    {
-        free(command_argv[i]);
-    }
-    free(command_argv);
-    for (int i=0;i<n_commands;++i)
-    {
-        free(list_command[i].name);
-        free(list_command[i].return_value);
-    }
-    free(list_command);
     return 0;
 }
