@@ -10,7 +10,13 @@ int exiting() {
 }
 void logging(command *list) {}
 
-void printing(int argc, char **argv) {}
+void printing(int argc, char** argv) {
+    for (int i = 0; i < argc; i++) {
+        
+
+    }
+    printf("printing test");
+}
 
 void theming() {}
 
