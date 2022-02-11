@@ -17,7 +17,28 @@ void printing(size_t argc, char** argv) {
     printf("\n");
 }
 
-void theming() {}
+void theming(char * colour)
+{
+    if (!strcmp(colour,"red"))
+    {
+        printf("\033[0;31m");
+        printf("%s \n", "theme changed to red");
+    }
+    else if (!strcmp(colour,"green"))
+    {
+        printf("\033[0;32m");
+        printf("%s \n", "theme changed to green");
+    }
+    else if (!strcmp(colour,"blue"))
+    {
+        printf("\033[0;34m");
+        printf("%s \n", "theme changed to blue");
+    }
+    else
+    {
+        printf("%s: %s \n", "Unsupported theme", colour);
+    }
+}
 
 void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value)
 {
@@ -53,4 +74,9 @@ void command_parsing(char *buffer, size_t *argc, char **argv)
     {
         if (argv[(*argc)-1][i]=='\n') argv[(*argc)-1][i] = 0;
     }
+}
+
+
+void red () {
+  printf("\033[0;31m");
 }

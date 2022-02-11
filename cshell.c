@@ -56,6 +56,7 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(command_argv[0], "theme"))
         {
+            theming(command_argv[1]);
             time(&raw_time);
         }
         else 
