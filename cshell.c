@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
         else if (!strcmp(command_argv[0], "print")) 
         {
             time(&raw_time);
-
+            printing(command_argc, command_argv);
         }
         else if (!strcmp(command_argv[0], "theme"))
         {

@@ -17,7 +17,7 @@ int exiting();
 
 void logging();
 
-void printing(int argc, char **argv);
+void printing(size_t argc, char **argv);
 
 void theming();
 

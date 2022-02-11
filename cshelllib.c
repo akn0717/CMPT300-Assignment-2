@@ -10,12 +10,11 @@ int exiting() {
 }
 void logging(command *list) {}
 
-void printing(int argc, char** argv) {
-    for (int i = 0; i < argc; i++) {
-        
-
+void printing(size_t argc, char** argv) {
+    for (int i = 1; i < (int) argc; i++) {
+        printf("%s ", argv[(i)]);
     }
-    printf("printing test");
+    printf("\n");
 }
 
 void theming() {}
