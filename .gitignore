@@ -1,5 +1,2 @@
-.vscode/settings.json
-.vscode/tasks.json
-.vscode/launch.json
 print_test.c
 print.mk
