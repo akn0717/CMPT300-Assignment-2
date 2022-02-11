@@ -8,42 +8,62 @@
 
 int main(int argc, char* argv[])
 {
-    const int n = 100;
-    size_t n_command = 0;
-    command *list_command = (void*) malloc(n*sizeof(command));
+    size_t buffer_size = 512;
+    char *buffer = (char*) malloc(buffer_size * sizeof(char));
+    size_t N_commands = 512;
+    command *list_command = (command*) malloc(buffer_size * sizeof(command));
 
-    timer_t timer;
+    int N_command_args = 10;
+    char **command_argv = (char **) malloc(N_command_args * sizeof(char*));
+    for (int i=0;i<10;++i)
+    {
+        command_argv[i] = (char *) malloc(sizeof(buffer) * sizeof(char));
+    }
+
+    size_t command_argc = 1;
+
+    char *return_value = NULL;
+
+    time_t raw_time;
+    struct tm *time_info;
+    time(&raw_time);
 
     while (1)
     {
         printf("cshell$ ");
-        char *c = (void*) malloc(512 * sizeof(char));
-        char *return_value = NULL;
-        c[0] = '\0';
-        scanf("%s",c);
+        
+        
+        buffer[0] = '\0';
+        getline(&buffer, &buffer_size, stdin);
+        
+        command_parsing(buffer, &command_argc, command_argv);
+        printf("%s",command_argv[0]);
 
-        if (!strcmp(c,"exit"))
+        if (!strcmp(command_argv[0],"exit"))
         {
+            time(&raw_time);
             exiting();
             return 0;
         }
-        else if (!strcmp(c, "log")) 
+        else if (!strcmp(command_argv[0], "log")) 
         {
-            time(&timer);
+            time(&raw_time);
+            logging();
         }
-        else if (!strcmp(c, "print")) 
+        else if (!strcmp(command_argv[0], "print")) 
         {
-            time(&timer);
+            time(&raw_time);
+
         }
-        else if (!strcmp(c, "theme"))
+        else if (!strcmp(command_argv[0], "theme"))
         {
-            time(&timer);
+            time(&raw_time);
         }
         else continue;
-        adding_log(list_command, &n_command, c, NULL, return_value);
+        time_info = localtime(&raw_time);
+        adding_log(list_command, &N_commands, command_argv[0], *time_info, return_value);
         
     }
     free(list_command);
     return 0;
-    // added a comment
 }
