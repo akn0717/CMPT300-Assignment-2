@@ -64,14 +64,18 @@ int main(int argc, char* argv[])
             continue;
         }
         time_info = localtime(&raw_time);
+
         adding_log(list_command, &n_commands, command_argv[0], *time_info, return_value);
+
     }
     for (int i=0;i<N_command_args;++i)
     {
         free(command_argv[i]);
     }
     free(command_argv);
+
     for (int i=0;i<n_commands;++i)
+
     {
         free(list_command[i].name);
         free(list_command[i].return_value);
