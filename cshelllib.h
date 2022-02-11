@@ -1,3 +1,6 @@
+#ifndef CSHELLLIB_H
+#define CSHELLLIB_H
+
 typedef struct command
 {
     char *name;
@@ -10,7 +13,6 @@ typedef struct {
     char *value;
 } EnvVar;
 
-
 int exiting();
 
 void logging();
@@ -19,7 +21,8 @@ void printing(int argc, char **argv);
 
 void theming();
 
-void adding_log(command *list, size_t size, char *name, struct tm *time, char *return_value);
+void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value);
 
-void command_casting();
+void command_parsing(char *buffer, size_t *argc, char **argv);
 
+#endif /* CSHELLLIB_H */
