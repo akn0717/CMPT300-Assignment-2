@@ -15,7 +15,7 @@ int exiting();
 
 void logging();
 
-void printing();
+void printing(int argc, char **argv);
 
 void theming();
 
