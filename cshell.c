@@ -63,7 +63,9 @@ int main(int argc, char* argv[])
             continue;
         }
         time_info = localtime(&raw_time);
+
         adding_log(list_command, &n_commands, command_argv[0], *time_info, return_value);
+
     }
     return 0;
 }
