@@ -14,6 +14,9 @@ int main(int argc, char* argv[])
         command_argv[i] = (char *) malloc(buffer_size * sizeof(char));
     }
 
+    EnvVar **variable_list = (EnvVar **) malloc(sizeof(EnvVar *)* MAX_N_VARIABLE);
+    size_t varl_size = 0;
+
     size_t command_argc;
     size_t n_commands = 0;
 
@@ -45,7 +48,7 @@ int main(int argc, char* argv[])
         }
         else if (command_argv[0][0] == '$')
         {
-            //variable_assigning();
+            variable_assigning(variable_list, command_argc, command_argv[0], command_argv[1]);
         }
         else if (!strcmp(command_argv[0], "log")) 
         {

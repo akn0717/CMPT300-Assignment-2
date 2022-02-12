@@ -55,7 +55,43 @@ void run() {
     }
 }
 
-void variable_assigning(char *name, char *value) {}
+char *find_variable_value(EnvVar *variable_list, char *name, int counter) 
+{
+    for(int i=0; i<counter; i++)
+    {
+        if(!strcmp(name, variable_list[i].name))
+        {
+            return variable_list[i].value;
+        }
+    }
+    return NULL;
+}
+
+EnvVar *find_variable(EnvVar *variable_list, size_t varl_size, char *name) 
+{
+
+}
+
+void variable_assigning(EnvVar **variable_list, size_t varl_size, char *name, char *value)
+{
+    //EnvVar *p = find_variable(variable_list, varl_size, name);
+    //if(p == NULL)
+    //{
+        ++varl_size;
+        EnvVar *my_struct;
+        my_struct = (EnvVar *) malloc(sizeof(EnvVar));
+        my_struct->name = (char *) malloc(sizeof(char)*MAX_STRING_LENGTH);
+        my_struct->value = (char *) malloc(sizeof(char)*MAX_STRING_LENGTH);
+        strcpy(my_struct->name, name);
+        strcpy(my_struct->value, value);
+        variable_list[varl_size]=my_struct;
+    /* }
+    else
+    {
+        p->value = value;
+    } */
+
+}
 
 void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value)
 {
