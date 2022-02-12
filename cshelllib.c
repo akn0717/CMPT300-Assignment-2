@@ -47,12 +47,35 @@ void theming(char * colour)
     }
 }
 
-void run() {
+int run(char *PATH, char **args) {
+    int fds[2];
+    int error = pipe(fds);
+    if (error)
+    {
+        return error;
+    }
     pid_t pid = fork();
     if (pid==0)
     {
-
+        close(fds[0]);
+        dup2(fds[1], STDOUT_FILENO);
+        dup2(fds[1], STDERR_FILENO);
+        execvp(PATH , args);
+        fprintf(stderr, "Missing keyword or command, or permission problem\n");
+        exit(EXIT_FAILURE);
     }
+    else if (pid>0)
+    {
+        char buffer[2] = "";
+        close(fds[1]);
+        while (read(fds[0], buffer, 1) == 1)
+        {
+            printf("%s", buffer);
+        }
+        wait(&error);
+        close(fds[0]);
+    }
+    return error;
 }
 
 char *find_variable_value(EnvVar *variable_list, char *name, int counter) 
@@ -122,6 +145,7 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
         if (arg[0]=='$' && (*argc)==0)
         {
             int i;
+            argv[*argc] = strdup(arg);
             for (i = 0;i<strlen(arg) && arg[i]!='=';++i)
             {
                 argv[(*argc)][i] = arg[i];
@@ -130,6 +154,7 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
             ++(*argc);
             if (arg[i]=='=')
             {
+                argv[*argc] = strdup(arg);
                 ++i;
                 int j = 0;
                 while (arg[i] != '\0')
@@ -143,12 +168,13 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
                 break;
             }
         }
-        strcpy(argv[(*argc)], arg);
+        argv[*argc] = strdup(arg);
         arg = strtok(NULL, " ");
         ++(*argc);
     }
     int n = strlen(argv[(*argc)-1]);
-    if (argv[(*argc)][n-2]=='\n') argv[n-2] = '\0';
+    if (argv[(*argc)-1][n-1]=='\n') argv[(*argc)-1][n-1] = '\0';
+    argv[(*argc)] = NULL;
     return 0;
 }
 

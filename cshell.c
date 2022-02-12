@@ -2,17 +2,11 @@
 
 int main(int argc, char* argv[])
 {
-    size_t buffer_size = 512;
-    char *buffer = (char*) malloc(buffer_size * sizeof(char));
-    size_t N_commands = 512;
-    command *list_command = (command*) malloc(N_commands * sizeof(command));
+    size_t buffer_size = MAX_N_COMMAND;
+    char *buffer = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
+    command *list_command = (command*) malloc(MAX_N_COMMAND * sizeof(command));
 
-    int N_command_args = 10;
-    char **command_argv = (char **) malloc(N_command_args * sizeof(char*));
-    for (int i=0;i<10;++i)
-    {
-        command_argv[i] = (char *) malloc(buffer_size * sizeof(char));
-    }
+    char **command_argv = (char **) malloc(MAX_N_ARGUMENTS * sizeof(char*));
 
     EnvVar **variable_list = (EnvVar **) malloc(sizeof(EnvVar *)* MAX_N_VARIABLE);
     size_t varl_size = 0;
@@ -32,9 +26,8 @@ int main(int argc, char* argv[])
         
         buffer[0] = '\0';
         getline(&buffer, &buffer_size, stdin);
-        
         int parsing_error = command_parsing(buffer, &command_argc, command_argv);
-        printf("%s %s", command_argv[0],command_argv[1]);
+        //printf("%s %s", command_argv[0],command_argv[1]);
         time(&raw_time);
         if (parsing_error)
         {
@@ -64,13 +57,9 @@ int main(int argc, char* argv[])
             theming(command_argv[1]);
             time(&raw_time);
         }
-        else 
-        {
-            printf("Missing keyword or command, or permission problem\n");
-            continue;
-        }
-        time_info = localtime(&raw_time);
+        else run(command_argv[0], command_argv);
 
+        time_info = localtime(&raw_time);
         adding_log(list_command, &n_commands, command_argv[0], *time_info, return_value);
 
     }
