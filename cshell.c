@@ -54,14 +54,9 @@ int main(int argc, char* argv[])
             theming(command_argv[1]);
             time(&raw_time);
         }
-        else 
-        {
-            int error = run(command_argv[0], command_argv);
-            if (error) printf("Missing keyword or command, or permission problem\n");
-            continue;
-        }
-        time_info = localtime(&raw_time);
+        else run(command_argv[0], command_argv);
 
+        time_info = localtime(&raw_time);
         adding_log(list_command, &n_commands, command_argv[0], *time_info, return_value);
 
     }
