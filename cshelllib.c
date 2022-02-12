@@ -49,18 +49,20 @@ void theming(char * colour)
 
 int run(char *PATH, char **args) {
     int fds[2];
-    if (pipe(fds)==-1)
+    int error = pipe(fds);
+    if (error)
     {
-        return 1;
+        return error;
     }
     pid_t pid = fork();
     if (pid==0)
     {
         close(fds[0]);
         dup2(fds[1], STDOUT_FILENO);
+        dup2(fds[1], STDERR_FILENO);
         execvp(PATH , args);
-        close(fds[1]);
-        exit(0);
+        fprintf(stderr, "Missing keyword or command, or permission problem\n");
+        exit(EXIT_FAILURE);
     }
     else if (pid>0)
     {
@@ -70,11 +72,10 @@ int run(char *PATH, char **args) {
         {
             printf("%s", buffer);
         }
-        wait(NULL);
+        wait(&error);
         close(fds[0]);
-        return 0;
     }
-    return 0;
+    return error;
 }
 
 void variable_assigning(char *name, char *value) {}
