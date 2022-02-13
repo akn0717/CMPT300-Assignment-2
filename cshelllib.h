@@ -29,11 +29,11 @@ int run(char *PATH, char **args);
 
 int exiting();
 
-void logging();
+int logging(command *comm_list, size_t comm_list_size);
 
 int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv);
 
-void theming();
+void theming(char * colour);
 
 void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value);
 

@@ -15,7 +15,13 @@ int exiting(command *list_command, size_t N_command_args, char **command_argv, s
     printf("Bye!\n");
     return 0;
 }
-void logging(command *list) {}
+int logging(command *comm_list, size_t comm_list_size) {
+    for (int i = 0; i < comm_list_size; i++)
+    {
+        printf("%s %s %s\n", asctime(&(comm_list[i].time)), comm_list[i].name, comm_list[i].return_value);
+    }
+    return 0;
+}
 
 int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv) {
     for (int i = 1; i < (int) argc; i++) {
