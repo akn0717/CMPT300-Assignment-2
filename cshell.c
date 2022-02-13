@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
         }
         else if (command_argv[0][0] == '$')
         {
-            variable_assigning(variable_list, command_argc, command_argv[0], command_argv[1]);
+            variable_assigning(variable_list, &varl_size, command_argv[0], command_argv[1]);
         }
         else if (!strcmp(command_argv[0], "log")) 
         {
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
         else if (!strcmp(command_argv[0], "print"))
         {
             time(&raw_time);
-            printing(command_argc, command_argv);
+            printing(variable_list, varl_size, command_argc, command_argv);
         }
         else if (!strcmp(command_argv[0], "theme"))
         {

@@ -17,11 +17,24 @@ int exiting(command *list_command, size_t N_command_args, char **command_argv, s
 }
 void logging(command *list) {}
 
-void printing(size_t argc, char** argv) {
+int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv) {
     for (int i = 1; i < (int) argc; i++) {
-        printf("%s ", argv[(i)]);
+        if(argv[i][0] == '$')
+        {
+            EnvVar * var = find_variable(var_list, varl_size, argv[i]);
+            if(var != NULL)
+            {
+                printf("%s ", var->value);
+            }
+            else return 1;
+        }
+        else
+        {
+            printf("%s ", argv[(i)]);
+        }
     }
     printf("\n");
+    return 0;
 }
 
 void theming(char * colour)
@@ -78,41 +91,37 @@ int run(char *PATH, char **args) {
     return error;
 }
 
-char *find_variable_value(EnvVar *variable_list, char *name, int counter) 
+
+EnvVar *find_variable(EnvVar **variable_list, size_t varl_size, char *name) 
 {
-    for(int i=0; i<counter; i++)
+    for(int i=0; i<varl_size; i++)
     {
-        if(!strcmp(name, variable_list[i].name))
+        if(!strcmp(name, variable_list[i]->name))
         {
-            return variable_list[i].value;
+            return variable_list[i];
         }
     }
     return NULL;
 }
 
-EnvVar *find_variable(EnvVar *variable_list, size_t varl_size, char *name) 
+void variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, char *value)
 {
-
-}
-
-void variable_assigning(EnvVar **variable_list, size_t varl_size, char *name, char *value)
-{
-    //EnvVar *p = find_variable(variable_list, varl_size, name);
-    //if(p == NULL)
-    //{
-        ++varl_size;
+    EnvVar *p = find_variable(variable_list, *varl_size, name);
+    if(p == NULL)
+    {
         EnvVar *my_struct;
         my_struct = (EnvVar *) malloc(sizeof(EnvVar));
         my_struct->name = (char *) malloc(sizeof(char)*MAX_STRING_LENGTH);
         my_struct->value = (char *) malloc(sizeof(char)*MAX_STRING_LENGTH);
         strcpy(my_struct->name, name);
         strcpy(my_struct->value, value);
-        variable_list[varl_size]=my_struct;
-    /* }
+        variable_list[*varl_size]=my_struct;
+        ++(*varl_size);
+    }
     else
     {
-        p->value = value;
-    } */
+        strcpy(p->value, value);
+    }
 
 }
 

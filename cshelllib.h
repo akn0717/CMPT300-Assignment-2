@@ -31,7 +31,7 @@ int exiting();
 
 void logging();
 
-void printing(size_t argc, char **argv);
+int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv);
 
 void theming();
 
@@ -41,8 +41,8 @@ int command_parsing(char *buffer, size_t *argc, char **argv);
 
 char *variable_accessing(EnvVar *variable_list, char *name, int counter);
 
-EnvVar *find_variable(EnvVar *variable_list, size_t varl_size, char *name);
+EnvVar *find_variable(EnvVar **variable_list, size_t varl_size, char *name);
 
-void variable_assigning(EnvVar **variable_list, size_t varl_size, char *name, char *value);
+void variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, char *value);
 
 #endif /* CSHELLLIB_H */
