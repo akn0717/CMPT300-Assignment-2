@@ -1,24 +1,24 @@
 #include "cshelllib.h"
 
-int exiting(command *list_command, size_t N_command_args, char **command_argv, size_t n_commands) {
-    for (int i=0;i<N_command_args;++i)
+int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands) {
+    for (int i=0;i<comm_list_size;++i)
     {
         free(command_argv[i]);
     }
     free(command_argv);
     for (int i=0;i<n_commands;++i)
     {
-        free(list_command[i].name);
-        free(list_command[i].return_value);
+        free(comm_list[i]->name);
+        free(comm_list[i]);
     }
-    free(list_command);
+    free(comm_list);
     printf("Bye!\n");
     return 0;
 }
-int logging(command *comm_list, size_t comm_list_size) {
+int logging(command **comm_list, size_t comm_list_size) {
     for (int i = 0; i < comm_list_size; i++)
     {
-        printf("%s %s %s\n", asctime(&(comm_list[i].time)), comm_list[i].name, comm_list[i].return_value);
+        printf("%s %s %d\n", asctime(&(comm_list[i]->time)), comm_list[i]->name, comm_list[i]->return_value);
     }
     return 0;
 }
@@ -112,7 +112,7 @@ EnvVar *find_variable(EnvVar **variable_list, size_t varl_size, char *name)
     return NULL;
 }
 
-void variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, char *value)
+int variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, char *value)
 {
     EnvVar *p = find_variable(variable_list, *varl_size, name);
     if(p == NULL)
@@ -130,26 +130,21 @@ void variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, 
     {
         strcpy(p->value, value);
     }
-    
+    return 0;
 }
 
-void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value)
+void adding_log(command **comm_list, size_t *comm_list_size, char *name, struct tm time, int return_value)
 {
+    comm_list[*comm_list_size] = (command*) malloc(sizeof(command));
     if (name!=NULL)
     {
-        list[*size].name = (char*) malloc(sizeof(name) * sizeof(char));
-        strcpy(list[*size].name, name);
+        comm_list[*comm_list_size]->name = strdup(name);
     }
 
-    list[*size].time = time;
+    comm_list[*comm_list_size]->time = time;
 
-    if (return_value != NULL)
-    {
-        list[*size].return_value = (char*) malloc(sizeof(return_value) * sizeof(char));
-        strcpy(list[*size].return_value, return_value);
-    }
-
-    ++(*size);
+    comm_list[*comm_list_size]->return_value = return_value;
+    ++(*comm_list_size);
 };
 
 
@@ -193,9 +188,4 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
     if (argv[(*argc)-1][n-1]=='\n') argv[(*argc)-1][n-1] = '\0';
     argv[(*argc)] = NULL;
     return 0;
-}
-
-
-void red () {
-  printf("\033[0;31m");
 }

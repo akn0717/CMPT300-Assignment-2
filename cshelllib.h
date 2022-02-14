@@ -17,7 +17,7 @@ typedef struct command
 {
     char *name;
     struct tm time;
-    char *return_value;
+    int return_value;
 } command;
 
 typedef struct {
@@ -29,20 +29,18 @@ int run(char *PATH, char **args);
 
 int exiting();
 
-int logging(command *comm_list, size_t comm_list_size);
+int logging(command **comm_list, size_t comm_list_size);
 
 int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv);
 
 int theming(char * colour);
 
-void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value);
+void adding_log(command **comm_list, size_t *comm_list_size, char *name, struct tm time, int return_value);
 
 int command_parsing(char *buffer, size_t *argc, char **argv);
 
-char *variable_accessing(EnvVar *variable_list, char *name, int counter);
-
 EnvVar *find_variable(EnvVar **variable_list, size_t varl_size, char *name);
 
-void variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, char *value);
+int variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, char *value);
 
 #endif /* CSHELLLIB_H */
