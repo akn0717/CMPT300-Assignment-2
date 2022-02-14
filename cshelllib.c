@@ -43,7 +43,7 @@ int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv) {
     return 0;
 }
 
-void theming(char * colour)
+int theming(char * colour)
 {
     if (!strcmp(colour,"red"))
     {
@@ -63,7 +63,9 @@ void theming(char * colour)
     else
     {
         printf("%s: %s \n", "Unsupported theme", colour);
+        return 1;
     }
+    return 0;
 }
 
 int run(char *PATH, char **args) {
@@ -128,7 +130,7 @@ void variable_assigning(EnvVar **variable_list, size_t * varl_size, char *name, 
     {
         strcpy(p->value, value);
     }
-
+    
 }
 
 void adding_log(command *list, size_t *size, char *name, struct tm time, char *return_value)
