@@ -34,8 +34,7 @@ int main(int argc, char* argv[])
     struct tm *time_info;
     time(&raw_time);
 
-    int colour_flag = 0;
-    char *colour_name = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
+    char colour_name[15] = "white";
 
     while (1)
     {
@@ -43,9 +42,9 @@ int main(int argc, char* argv[])
         if (flag==0)
         {
             printf("cshell$ ");
-            theming(" ", 0);
+            theming("white");
             getline(&buffer, &buffer_size, stdin);
-            theming(colour_name, colour_flag);
+            theming(colour_name);
         }
         else
         {
@@ -85,9 +84,11 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(command_argv[0], "theme"))
         {
-            colour_flag = 1;
-            colour_name = command_argv[1];
-            return_value = theming(command_argv[1], colour_flag);
+            return_value = theming(command_argv[1]);
+            if(return_value == 0)
+            {
+                strcpy(colour_name, command_argv[1]);
+            }
         }
         else run(command_argv[0], command_argv);
 

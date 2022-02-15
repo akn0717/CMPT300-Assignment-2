@@ -43,7 +43,7 @@ int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv) {
     return 0;
 }
 
-int theming(char * colour, int colour_flag)
+int theming(char * colour)
 {
     if (!strcmp(colour,"red"))
     {
@@ -57,7 +57,7 @@ int theming(char * colour, int colour_flag)
     {
         printf("\033[0;34m");
     }
-    else if (colour_flag == 0)
+    else if (!strcmp(colour,"white"))
     {
         printf("\033[0m");
     }

@@ -33,7 +33,7 @@ int logging(command **comm_list, size_t comm_list_size);
 
 int printing(EnvVar ** var_list, size_t varl_size, size_t argc, char ** argv);
 
-int theming(char * colour, int colour_flag);
+int theming(char * colour);
 
 void adding_log(command **comm_list, size_t *comm_list_size, char *name, struct tm time, int return_value);
 
