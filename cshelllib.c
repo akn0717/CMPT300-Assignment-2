@@ -53,17 +53,18 @@ int theming(char * colour)
     if (!strcmp(colour,"red"))
     {
         printf("\033[0;31m");
-        printf("%s \n", "theme changed to red");
     }
     else if (!strcmp(colour,"green"))
     {
         printf("\033[0;32m");
-        printf("%s \n", "theme changed to green");
     }
     else if (!strcmp(colour,"blue"))
     {
         printf("\033[0;34m");
-        printf("%s \n", "theme changed to blue");
+    }
+    else if (!strcmp(colour,"white"))
+    {
+        printf("\033[0m");
     }
     else
     {
@@ -71,6 +72,11 @@ int theming(char * colour)
         return 1;
     }
     return 0;
+}
+
+void reset_colour()
+{
+    printf("\033[0m");
 }
 
 int run(char *PATH, char **args) {
@@ -155,6 +161,7 @@ void adding_log(command **comm_list, size_t *comm_list_size, char *name, struct 
 
 int command_parsing(char *buffer, size_t *argc, char **argv)
 {
+
     for (int i=0;i<(*argc);++i)
     {
         if (argv[i]!=NULL) free(argv[i]);

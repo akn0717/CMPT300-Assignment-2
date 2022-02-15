@@ -35,13 +35,17 @@ int main(int argc, char* argv[])
     struct tm *time_info;
     time(&raw_time);
 
+    char colour_name[15] = "white";
+
     while (1)
     {
         buffer[0] = '\0';
         if (flag==0)
         {
             printf("cshell$ ");
+            theming("white");
             getline(&buffer, &buffer_size, stdin);
+            theming(colour_name);
         }
         else
         {
@@ -71,7 +75,7 @@ int main(int argc, char* argv[])
             strcat(command_argv[0], "=");
             strcat(command_argv[0], command_argv[1]);
         }
-        else if (!strcmp(command_argv[0], "log")) 
+        else if (!strcmp(command_argv[0], "log"))
         {
             return_value = logging(comm_list, comm_list_size);
         }
@@ -82,6 +86,10 @@ int main(int argc, char* argv[])
         else if (!strcmp(command_argv[0], "theme"))
         {
             return_value = theming(command_argv[1]);
+            if(return_value == 0)
+            {
+                strcpy(colour_name, command_argv[1]);
+            }
         }
         else run(command_argv[0], command_argv);
 
