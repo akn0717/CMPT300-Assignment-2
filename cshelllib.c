@@ -1,17 +1,22 @@
 #include "cshelllib.h"
 
-int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands) {
+int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands, char* buffer) {
     for (int i=0;i<comm_list_size;++i)
     {
         free(command_argv[i]);
+        command_argv[i] = NULL;
     }
     free(command_argv);
+    command_argv = NULL;
     for (int i=0;i<n_commands;++i)
     {
         free(comm_list[i]->name);
+        comm_list[i]->name = NULL;
         free(comm_list[i]);
+        comm_list[i] = NULL;
     }
     free(comm_list);
+    free(buffer);
     printf("Bye!\n");
     return 0;
 }
@@ -156,43 +161,39 @@ void adding_log(command **comm_list, size_t *comm_list_size, char *name, struct 
 
 int command_parsing(char *buffer, size_t *argc, char **argv)
 {
-    //char *quotes = strtok(buffer, "\"");
-    char *arg = strtok(buffer, " ");
-    (*argc) = 0;
-    while (arg != NULL)
+
+    for (int i=0;i<(*argc);++i)
     {
-        if (arg[0]=='$' && (*argc)==0)
+        if (argv[i]!=NULL) free(argv[i]);
+    }
+    (*argc) = 0;
+
+    int n = strlen(buffer);
+    if (buffer[n-1]=='\n') buffer[n-1] = '\0';
+
+    char *token = strtok(buffer, " =");
+    int flag = 0;
+    while (token!=NULL)
+    {
+        n = strlen(token);
+        if (argv[(*argc)]==NULL)
         {
-            int i;
-            argv[*argc] = strdup(arg);
-            for (i = 0;i<strlen(arg) && arg[i]!='=';++i)
+            argv[(*argc)] = strdup(token);
+        } else
+        {
+            strcat(argv[(*argc)],token);
+        }
+        for (int i=0;i<n;++i)
+        {
+            if (token[i]=='"') 
             {
-                argv[(*argc)][i] = arg[i];
-            }
-            argv[(*argc)][i] = '\0';
-            ++(*argc);
-            if (arg[i]=='=')
-            {
-                argv[*argc] = strdup(arg);
-                ++i;
-                int j = 0;
-                while (arg[i] != '\0')
-                {
-                    argv[(*argc)][j] = arg[i];
-                    ++i;
-                    ++j;
-                }
-                argv[(*argc)][j] = '\0';
-                ++(*argc);
-                break;
+                flag = !flag;
             }
         }
-        argv[*argc] = strdup(arg);
-        arg = strtok(NULL, " ");
-        ++(*argc);
+        token = strtok(NULL," =");
+        if (flag == 0) ++(*argc);
     }
-    int n = strlen(argv[(*argc)-1]);
-    if (argv[(*argc)-1][n-1]=='\n') argv[(*argc)-1][n-1] = '\0';
+    if (flag == 1) return 1;
     argv[(*argc)] = NULL;
     return 0;
 }
