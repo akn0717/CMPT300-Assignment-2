@@ -16,17 +16,18 @@ int main(int argc, char* argv[])
         flag = 1;
     }
 
-    size_t buffer_size = MAX_N_COMMAND;
     char *buffer = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
-    command **comm_list = (command**) malloc(MAX_N_COMMAND * sizeof(command*));
+    size_t buffer_size = MAX_STRING_LENGTH;
 
     char **command_argv = (char **) malloc(MAX_N_ARGUMENTS * sizeof(char*));
+    size_t command_argc = 0;
+    
+    command **logcom_list = (command**) malloc(MAX_N_COMMAND * sizeof(command*));
+    size_t logcom_list_size = 0;
 
     EnvVar **variable_list = (EnvVar **) malloc(sizeof(EnvVar *)* MAX_N_VARIABLE);
     size_t varl_size = 0;
 
-    size_t command_argc;
-    size_t comm_list_size = 0;
 
     int return_value = 0;
 
@@ -46,7 +47,7 @@ int main(int argc, char* argv[])
         {
             if (fgets (buffer, buffer_size, fptr ) == NULL)
             {
-                exiting();
+                exiting(logcom_list, logcom_list_size, command_argv, command_argc, buffer);
                 fclose ( fptr );
                 return 0;
             }
@@ -61,7 +62,7 @@ int main(int argc, char* argv[])
         }
         if (!strcmp(command_argv[0],"exit"))
         {
-            return_value = exiting();
+            return_value = exiting(logcom_list, logcom_list_size, command_argv, command_argc, buffer);
             return 0;
         }
         else if (command_argv[0][0] == '$')
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(command_argv[0], "log")) 
         {
-            return_value = logging(comm_list, comm_list_size);
+            return_value = logging(logcom_list, logcom_list_size);
         }
         else if (!strcmp(command_argv[0], "print"))
         {
@@ -85,7 +86,7 @@ int main(int argc, char* argv[])
         else run(command_argv[0], command_argv);
 
         time_info = localtime(&raw_time);
-        adding_log(comm_list, &comm_list_size, command_argv[0], *time_info, return_value);
+        adding_log(logcom_list, &logcom_list_size, command_argv[0], *time_info, return_value);
 
     }
     return 0;

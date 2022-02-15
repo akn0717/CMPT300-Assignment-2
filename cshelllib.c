@@ -1,6 +1,6 @@
 #include "cshelllib.h"
 
-int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands) {
+int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands, char* buffer) {
     for (int i=0;i<comm_list_size;++i)
     {
         free(command_argv[i]);
@@ -12,6 +12,7 @@ int exiting(command **comm_list, size_t comm_list_size, char **command_argv, siz
         free(comm_list[i]);
     }
     free(comm_list);
+    free(buffer);
     printf("Bye!\n");
     return 0;
 }
@@ -150,8 +151,13 @@ void adding_log(command **comm_list, size_t *comm_list_size, char *name, struct 
 
 int command_parsing(char *buffer, size_t *argc, char **argv)
 {
-    char *arg = strtok(buffer, " ");
+    for (int i=0;i<(*argc);++i)
+    {
+        if (argv[i]!=NULL) free(argv[i]);
+    }
     (*argc) = 0;
+
+    char *arg = strtok(buffer, " ");
     while (arg != NULL)
     {
         if (arg[0]=='$' && (*argc)==0)
