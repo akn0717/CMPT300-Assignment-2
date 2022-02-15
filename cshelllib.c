@@ -171,30 +171,44 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
 
     int n = strlen(buffer);
     if (buffer[n-1]=='\n') buffer[n-1] = '\0';
+    int flag = 0;
+    
+    for (int i=0;i<n;++i)
+    {
+        if (buffer[i]=='"')
+        {
+            flag = !flag;
+            continue;
+        }
+        if (flag==1 && buffer[i]==' ') buffer[i]='\n';
+    }
+    
+    if (flag == 1) return 1;
 
     char *token = strtok(buffer, " =");
-    int flag = 0;
+
     while (token!=NULL)
     {
         n = strlen(token);
-        if (argv[(*argc)]==NULL)
+        argv[(*argc)] = strdup(token);
+        token = strtok(NULL," =");
+        ++(*argc);
+    }
+    flag = 0;
+    for (int i=0;i<(*argc);++i)
+    {
+        n = strlen(argv[i]);
+        flag = 0;
+        for (int j=0;j<n;++j)
         {
-            argv[(*argc)] = strdup(token);
-        } else
-        {
-            strcat(argv[(*argc)],token);
-        }
-        for (int i=0;i<n;++i)
-        {
-            if (token[i]=='"') 
+            if (argv[i][j] == '"')
             {
                 flag = !flag;
+                continue;
             }
+            if (flag == 1 && argv[i][j]=='\n') argv[i][j] = ' ';
         }
-        token = strtok(NULL," =");
-        if (flag == 0) ++(*argc);
     }
-    if (flag == 1) return 1;
     argv[(*argc)] = NULL;
     return 0;
 }
