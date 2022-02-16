@@ -27,7 +27,7 @@ typedef struct {
 
 int run(char *PATH, char **args);
 
-int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands, char* buffer);
+int exiting(command **comm_list, size_t comm_list_size, EnvVar **variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer);
 
 int logging(command **comm_list, size_t comm_list_size);
 

@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
         {
             if (fgets (buffer, buffer_size, fptr ) == NULL)
             {
-                exiting(comm_list, comm_list_size, command_argv, command_argc, buffer);
+                exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
                 fclose ( fptr );
                 return 0;
             }
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
         }
         if (!strcmp(command_argv[0],"exit"))
         {
-            return_value = exiting(comm_list, comm_list_size, command_argv, command_argc, buffer);
+            return_value = exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
             return 0;
         }
         else if (command_argv[0][0] == '$')

@@ -1,6 +1,6 @@
 #include "cshelllib.h"
 
-int exiting(command **comm_list, size_t comm_list_size, char **command_argv, size_t n_commands, char* buffer) {
+int exiting(command **comm_list, size_t comm_list_size, EnvVar** variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer) {
     for (int i=0;i<comm_list_size;++i)
     {
         free(command_argv[i]);
@@ -8,6 +8,7 @@ int exiting(command **comm_list, size_t comm_list_size, char **command_argv, siz
     }
     free(command_argv);
     command_argv = NULL;
+
     for (int i=0;i<n_commands;++i)
     {
         free(comm_list[i]->name);
@@ -16,6 +17,17 @@ int exiting(command **comm_list, size_t comm_list_size, char **command_argv, siz
         comm_list[i] = NULL;
     }
     free(comm_list);
+    comm_list = NULL;
+
+    for (int i=0;i<varl_size;++i)
+    {
+        free(variable_list[i]->name);
+        free(variable_list[i]->value);
+        free(variable_list[i]);
+    }
+    free(variable_list);
+    variable_list = NULL;
+
     free(buffer);
     printf("Bye!\n");
     return 0;
