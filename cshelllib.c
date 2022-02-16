@@ -187,7 +187,7 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
     
     for (int i=0;i<n;++i)
     {
-        if (buffer[i]=='"')
+        if (buffer[i]=='\"' || buffer[i]=='\'')
         {
             flag = !flag;
             continue;
@@ -197,14 +197,38 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
     
     if (flag == 1) return 1;
 
-    char *token = strtok(buffer, " =");
-
+    char *token = strtok(buffer, " ");
     while (token!=NULL)
     {
         n = strlen(token);
         argv[(*argc)] = strdup(token);
-        token = strtok(NULL," =");
+        token = strtok(NULL," ");
         ++(*argc);
+        if (*argc == 1)
+        {
+            if (argv[0][0] == '$')
+            {
+                if (token!=NULL) return 1;
+                else
+                {
+                    char* temp =strdup(argv[0]);
+                    token = strtok(temp,"=");
+                    strcpy(argv[0],token);
+                    token = strtok(NULL,"=");
+                    argv[1] = strdup(token);
+                    token = strtok(NULL,"=");
+                    if (token!=NULL)
+                    {
+                        free(temp);
+                        return 1;
+                    }
+                    free(temp);
+                    (*argc) = 2;
+                    break;
+                }
+            }
+        }
+        
     }
     flag = 0;
     for (int i=0;i<(*argc);++i)
@@ -213,7 +237,7 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
         flag = 0;
         for (int j=0;j<n;++j)
         {
-            if (argv[i][j] == '"')
+            if (argv[i][j] == '\"' || argv[i][j] == '\'')
             {
                 flag = !flag;
                 continue;

@@ -57,11 +57,10 @@ int main(int argc, char* argv[])
             }
         }
         int parsing_error = command_parsing(buffer, &command_argc, command_argv);
-        //printf("%s %s", command_argv[0],command_argv[1]);
         time(&raw_time);
         if (parsing_error)
         {
-            printf("ERROR: Incorrect format for variable name!");
+            printf("ERROR: Incorrect format for variable name!\n");
             continue;
         }
         if (!strcmp(command_argv[0],"exit"))
@@ -74,6 +73,7 @@ int main(int argc, char* argv[])
             return_value = variable_assigning(variable_list, &varl_size, command_argv[0], command_argv[1]);
             strcat(command_argv[0], "=");
             strcat(command_argv[0], command_argv[1]);
+            command_argv[1] = NULL;
         }
         else if (!strcmp(command_argv[0], "log"))
         {
