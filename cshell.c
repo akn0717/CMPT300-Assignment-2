@@ -21,7 +21,6 @@ int main(int argc, char* argv[])
 
     char **command_argv = (char **) malloc(MAX_N_ARGUMENTS * sizeof(char*));
     size_t command_argc = 0;
-    for (int i=0;i<MAX_N_ARGUMENTS;++i) command_argv[i] = NULL;
     
     command **comm_list = (command**) malloc(MAX_N_COMMAND * sizeof(command*));
     size_t comm_list_size = 0;
@@ -29,6 +28,9 @@ int main(int argc, char* argv[])
     EnvVar **variable_list = (EnvVar **) malloc(sizeof(EnvVar *)* MAX_N_VARIABLE);
     size_t varl_size = 0;
 
+    for (int i=0;i<MAX_N_ARGUMENTS;++i) command_argv[i] = NULL;
+    for (int i=0;i<MAX_N_COMMAND;++i) comm_list[i] = NULL;
+    for (int i=0;i<MAX_N_VARIABLE;++i) variable_list[i] = NULL;
 
     int return_value = 0;
 
@@ -40,12 +42,7 @@ int main(int argc, char* argv[])
 
     while (1)
     {
-        for (int i=0;i<command_argc;++i)
-        {
-            if (command_argv[i]!=NULL) free(command_argv[i]);
-            command_argv[i] = NULL;
-        }
-        buffer[0] = '\0';
+        memset(buffer,0,buffer_size);
         if (flag==0)
         {
             printf("cshell$ ");
@@ -58,8 +55,7 @@ int main(int argc, char* argv[])
             if (fgets (buffer, buffer_size, fptr ) == NULL)
             {
                 fclose ( fptr );
-                exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
-                return 0;
+                break;
             }
         }
         int parsing_error = command_parsing(buffer, &command_argc, command_argv);
@@ -71,15 +67,13 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(command_argv[0],"exit"))
         {
-            exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
-            return 0;
+            break;
         }
         else if (command_argv[0][0] == '$')
         {
             return_value = variable_assigning(variable_list, &varl_size, command_argv[0], command_argv[1]);
             strcat(command_argv[0], "=");
             strcat(command_argv[0], command_argv[1]);
-            command_argv[1] = NULL;
         }
         else if (!strcmp(command_argv[0], "log"))
         {
@@ -105,10 +99,55 @@ int main(int argc, char* argv[])
         {
             return_value = print_uppercase(command_argv[1]);
         }
-        else run(command_argv[0], command_argv);
+        else 
+        {
+            int fds[2];
+            int error = pipe(fds);
+            if (!error)
+            {
+                pid_t pid = fork();
+                if (pid==0)
+                {
+                    close(fds[0]);
+                    dup2(fds[1], STDOUT_FILENO);
+                    dup2(fds[1], STDERR_FILENO);
+                    execvp(command_argv[0] , command_argv);
+                    fprintf(stderr, "Missing keyword or command, or permission problem\n");
+                    close(fds[1]);
+                    fclose(fptr);
+                    free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
+                    exit(EXIT_FAILURE);
+                }
+                else if (pid>0)
+                {
+                    char buffer[2] = "";
+                    close(fds[1]);
+                    while (read(fds[0], buffer, 1) == 1)
+                    {
+                        printf("%s", buffer);
+                    }
+                    wait(&error);
+                    close(fds[0]);
+                }
+                if (error) error = 2;
+            } else error = 1;
+            return_value = error;
+            if (return_value == 1)
+            {
+                printf("Can't create pipe!\n");
+            }
+        }
 
         time_info = localtime(&raw_time);
         adding_log(comm_list, &comm_list_size, command_argv[0], *time_info, return_value);
     }
+    for (int i=0;i<command_argc;++i)
+    {
+        if (command_argv[i]!=NULL) free(command_argv[i]);
+        command_argv[i] = NULL;
+    }
+    command_argc = 0;
+    free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
+    printf("Bye!\n");
     return 0;
 }

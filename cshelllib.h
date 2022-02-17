@@ -27,11 +27,11 @@ typedef struct {
     char *value;
 } EnvVar;
 
-int run(char *PATH, char **args);
+int exitting();
 
 int print_uppercase(char *str);
 
-int exiting(command **comm_list, size_t comm_list_size, EnvVar **variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer);
+void free_memory(command **comm_list, size_t comm_list_size, EnvVar **variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer);
 
 int logging(command **comm_list, size_t comm_list_size);
 

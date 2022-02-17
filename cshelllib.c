@@ -11,7 +11,8 @@ int print_uppercase(char *str)
     return 1;
 }
 
-int exiting(command **comm_list, size_t comm_list_size, EnvVar** variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer) {
+void free_memory(command **comm_list, size_t comm_list_size, EnvVar** variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer)
+{
     for (int i=0;i<n_commands;++i)
     {
         free(command_argv[i]);
@@ -33,16 +34,25 @@ int exiting(command **comm_list, size_t comm_list_size, EnvVar** variable_list, 
     for (int i=0;i<varl_size;++i)
     {
         free(variable_list[i]->name);
+        variable_list[i]->name = NULL;
         free(variable_list[i]->value);
+        variable_list[i]->value = NULL;
         free(variable_list[i]);
+        variable_list[i] = NULL;
     }
     free(variable_list);
     variable_list = NULL;
 
     free(buffer);
+    buffer = NULL;
+}
+
+int exitting()
+{
     printf("Bye!\n");
     return 0;
 }
+
 int logging(command **comm_list, size_t comm_list_size) {
     for (int i = 0; i < comm_list_size; i++)
     {
@@ -96,37 +106,6 @@ int theming(char * colour)
         return 1;
     }
     return 0;
-}
-
-int run(char *PATH, char **args) {
-    int fds[2];
-    int error = pipe(fds);
-    if (error)
-    {
-        return error;
-    }
-    pid_t pid = fork();
-    if (pid==0)
-    {
-        close(fds[0]);
-        dup2(fds[1], STDOUT_FILENO);
-        dup2(fds[1], STDERR_FILENO);
-        execvp(PATH , args);
-        fprintf(stderr, "Missing keyword or command, or permission problem\n");
-        exit(EXIT_FAILURE);
-    }
-    else if (pid>0)
-    {
-        char buffer[2] = "";
-        close(fds[1]);
-        while (read(fds[0], buffer, 1) == 1)
-        {
-            printf("%s", buffer);
-        }
-        wait(&error);
-        close(fds[0]);
-    }
-    return error;
 }
 
 
@@ -184,6 +163,7 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
     for (int i=0;i<(*argc);++i)
     {
         if (argv[i]!=NULL) free(argv[i]);
+        argv[i] = NULL;
     }
     (*argc) = 0;
 
@@ -207,7 +187,8 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
     while (token!=NULL)
     {
         n = strlen(token);
-        argv[(*argc)] = strdup(token);
+        argv[(*argc)] = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
+        strcpy(argv[(*argc)],token);
         token = strtok(NULL," ");
         ++(*argc);
         if (*argc == 1)
@@ -217,24 +198,18 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
                 if (token!=NULL) return 1;
                 else
                 {
-                    char* temp =strdup(argv[0]);
+                    char temp[MAX_STRING_LENGTH];
+                    strcpy(temp, argv[0]);
                     token = strtok(temp,"=");
-                    strcpy(argv[0],token);
+                    strcpy(argv[0], token);
                     token = strtok(NULL,"=");
-                    argv[1] = strdup(token);
-                    token = strtok(NULL,"=");
-                    if (token!=NULL)
-                    {
-                        free(temp);
-                        return 1;
-                    }
-                    free(temp);
-                    (*argc) = 2;
+                    argv[(*argc)] = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
+                    strcpy(argv[(*argc)],token);
+                    ++(*argc);
                     break;
                 }
             }
         }
-        
     }
     flag = 0;
     for (int i=0;i<(*argc);++i)
