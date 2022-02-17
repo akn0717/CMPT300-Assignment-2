@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
         fptr = fopen(argv[1],"r");
         if ( fptr == NULL )
         {
-            printf ( "Unable to read the script file %s \n" , argv[1]) ;
+            fprintf (stderr, "Unable to read the script file %s \n" , argv[1]) ;
             return 1;
         }
         flag = 1;
@@ -39,6 +39,11 @@ int main(int argc, char* argv[])
 
     while (1)
     {
+        for (int i=0;i<command_argc;++i)
+        {
+            if (command_argv[i]!=NULL) free(command_argv[i]);
+            command_argv[i] = NULL;
+        }
         buffer[0] = '\0';
         if (flag==0)
         {
@@ -51,8 +56,8 @@ int main(int argc, char* argv[])
         {
             if (fgets (buffer, buffer_size, fptr ) == NULL)
             {
-                exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
                 fclose ( fptr );
+                exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
                 return 0;
             }
         }
@@ -60,12 +65,12 @@ int main(int argc, char* argv[])
         time(&raw_time);
         if (parsing_error)
         {
-            printf("ERROR: Incorrect format for variable name!\n");
+            fprintf(stderr, "Incorrect syntax!\n");
             continue;
         }
-        if (!strcmp(command_argv[0],"exit"))
+        else if (!strcmp(command_argv[0],"exit"))
         {
-            return_value = exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
+            exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
             return 0;
         }
         else if (command_argv[0][0] == '$')
@@ -95,15 +100,14 @@ int main(int argc, char* argv[])
                 strcpy(colour_name, command_argv[1]);
             }
         }
+        else if (!strcmp(command_argv[0], "uppercase"))
+        {
+            return_value = print_uppercase(command_argv[1]);
+        }
         else run(command_argv[0], command_argv);
 
         time_info = localtime(&raw_time);
         adding_log(comm_list, &comm_list_size, command_argv[0], *time_info, return_value);
-        for (int i=0;i<command_argc;++i)
-        {
-            if (command_argv[i]!=NULL) free(command_argv[i]);
-            command_argv[i] = NULL;
-        }
     }
     return 0;
 }

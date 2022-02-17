@@ -1,5 +1,16 @@
 #include "cshelllib.h"
 
+int print_uppercase(char *str)
+{
+    int n = strlen(str);
+    if (!syscall(sys_uppercase, str, n))
+    {
+        printf("%s\n", str);
+        return 0;
+    }
+    return 1;
+}
+
 int exiting(command **comm_list, size_t comm_list_size, EnvVar** variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer) {
     for (int i=0;i<comm_list_size;++i)
     {
@@ -85,11 +96,6 @@ int theming(char * colour)
         return 1;
     }
     return 0;
-}
-
-void reset_colour()
-{
-    printf("\033[0m");
 }
 
 int run(char *PATH, char **args) {

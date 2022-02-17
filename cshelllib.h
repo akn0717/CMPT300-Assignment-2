@@ -13,6 +13,8 @@
 #define MAX_N_VARIABLE 50
 #define MAX_N_ARGUMENTS 50
 
+#define sys_uppercase 440
+
 typedef struct command
 {
     char *name;
@@ -26,6 +28,8 @@ typedef struct {
 } EnvVar;
 
 int run(char *PATH, char **args);
+
+int print_uppercase(char *str);
 
 int exiting(command **comm_list, size_t comm_list_size, EnvVar **variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer);
 
