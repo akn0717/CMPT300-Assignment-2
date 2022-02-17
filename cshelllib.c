@@ -201,8 +201,10 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
                     char temp[MAX_STRING_LENGTH];
                     strcpy(temp, argv[0]);
                     token = strtok(temp,"=");
+                    if (token==NULL) return 1;
                     strcpy(argv[0], token);
                     token = strtok(NULL,"=");
+                    if (token==NULL) return 1;
                     argv[(*argc)] = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
                     strcpy(argv[(*argc)],token);
                     ++(*argc);

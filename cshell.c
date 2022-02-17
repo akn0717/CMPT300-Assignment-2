@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
             return_value = printing(variable_list, varl_size, command_argc, command_argv);
             if (return_value==1)
             {
-                printf("Non existing variable name!\n");
+                printf("Non-existing variable name!\n");
             }
         }
         else if (!strcmp(command_argv[0], "theme"))
