@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         // error if syntax is incorrect during new variable assignment
         if (parsing_error==1)
         {
-            printf("Variable value expected!\n");
+            printf("Incorrect syntax for assigning a variable. \n");
             continue;
         }
 
