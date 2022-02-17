@@ -5,16 +5,21 @@ int main(int argc, char* argv[])
     FILE *fptr;
     int flag = 0;
 
+    // open the script file and read from the file if the 
+    // file name is mentioned when running the program (./cshell myscript.txt)
     if (argc > 1)
     {
         fptr = fopen(argv[1],"r");
         if ( fptr == NULL )
         {
+            // error if file name is incorrectly spelled.
             fprintf (stderr, "Unable to read the script file %s \n" , argv[1]) ;
             return 1;
         }
         flag = 1;
     }
+
+    // Initializing different variables
 
     char *buffer = (char*) malloc(MAX_STRING_LENGTH * sizeof(char));
     size_t buffer_size = MAX_STRING_LENGTH;
@@ -36,8 +41,10 @@ int main(int argc, char* argv[])
     struct tm *time_info;
     time(&raw_time);
 
+    // keeping the default cshell colour white. user input will always show up in white.
     char colour_name[15] = "white";
 
+    // loop to run the cshell until the exit command is received.
     while (1)
     {
         for (int i=0;i<command_argc;++i)
@@ -49,12 +56,15 @@ int main(int argc, char* argv[])
         if (flag==0)
         {
             printf("cshell$ ");
+            // change colour to white for the user input as shown in the assignment requirements.
             theming("white");
             getline(&buffer, &buffer_size, stdin);
+            // change the colour back to what it was before taking the user input
             theming(colour_name);
         }
         else
         {
+            // read through each line of myscript.txt and exit after the last line
             if (fgets (buffer, buffer_size, fptr ) == NULL)
             {
                 fclose ( fptr );
@@ -64,16 +74,22 @@ int main(int argc, char* argv[])
         }
         int parsing_error = command_parsing(buffer, &command_argc, command_argv);
         time(&raw_time);
+
+        // error if syntax is incorrect during new variable assignment
         if (parsing_error)
         {
             fprintf(stderr, "Variable value expected \n");
             continue;
         }
+
+        // exit function
         else if (!strcmp(command_argv[0],"exit"))
         {
             exiting(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
             return 0;
         }
+
+        // function to assign variable valuey
         else if (command_argv[0][0] == '$')
         {
             return_value = variable_assigning(variable_list, &varl_size, command_argv[0], command_argv[1]);
