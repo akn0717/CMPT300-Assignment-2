@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
     char **command_argv = (char **) malloc(MAX_N_ARGUMENTS * sizeof(char*));
     size_t command_argc = 0;
+    for (int i=0;i<MAX_N_ARGUMENTS;++i) command_argv[i] = NULL;
     
     command **comm_list = (command**) malloc(MAX_N_COMMAND * sizeof(command*));
     size_t comm_list_size = 0;

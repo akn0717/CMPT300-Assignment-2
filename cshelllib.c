@@ -12,7 +12,7 @@ int print_uppercase(char *str)
 }
 
 int exiting(command **comm_list, size_t comm_list_size, EnvVar** variable_list, size_t varl_size, char **command_argv, size_t n_commands, char* buffer) {
-    for (int i=0;i<comm_list_size;++i)
+    for (int i=0;i<n_commands;++i)
     {
         free(command_argv[i]);
         command_argv[i] = NULL;
@@ -20,7 +20,7 @@ int exiting(command **comm_list, size_t comm_list_size, EnvVar** variable_list, 
     free(command_argv);
     command_argv = NULL;
 
-    for (int i=0;i<n_commands;++i)
+    for (int i=0;i<comm_list_size;++i)
     {
         free(comm_list[i]->name);
         comm_list[i]->name = NULL;
