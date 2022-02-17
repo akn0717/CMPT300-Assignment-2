@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
 
     int return_value = 0;
 
+    //Initializing timer variables
     time_t raw_time;
     struct tm *time_info;
     time(&raw_time);
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
         time(&raw_time);
 
         // error if syntax is incorrect during new variable assignment
-        if (parsing_error)
+        if (parsing_error==1)
         {
             fprintf(stderr, "Variable value expected \n");
             continue;
@@ -157,12 +158,7 @@ int main(int argc, char* argv[])
         time_info = localtime(&raw_time);
         adding_log(comm_list, &comm_list_size, command_argv[0], *time_info, return_value);
     }
-    for (int i=0;i<command_argc;++i)
-    {
-        if (command_argv[i]!=NULL) free(command_argv[i]);
-        command_argv[i] = NULL;
-    }
-    command_argc = 0;
+    
     free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
     printf("Bye!\n");
     return 0;
