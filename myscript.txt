@@ -9,4 +9,3 @@ failure
 whoami
 theme red
 log
-
