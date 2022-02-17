@@ -1,7 +1,12 @@
 $var=foo
 print $var
+theme blue
+log
+theme unsu
 pwd
+ls
 failure
 whoami
 theme red
 log
+

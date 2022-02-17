@@ -186,6 +186,9 @@ int command_parsing(char *buffer, size_t *argc, char **argv)
     int n = strlen(buffer);
     if (buffer[n-1]=='\n') buffer[n-1] = '\0';
 
+    //if empty command
+    if (buffer[0]=='\0') return 2;
+
     //variable to check if there are double quotations
     int flag = 0;
     

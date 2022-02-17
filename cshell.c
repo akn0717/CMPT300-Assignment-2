@@ -78,6 +78,10 @@ int main(int argc, char* argv[])
             printf("Incorrect syntax for assigning a variable. \n");
             continue;
         }
+        else if (parsing_error==2)
+        {
+            continue;
+        }
 
         // exit function
         else if (!strcmp(command_argv[0],"exit"))

@@ -1,6 +1,0 @@
-print_test.c
-print.mk
-cshell.o
-cshelllib.o
-cshell
-understandable_makefile
