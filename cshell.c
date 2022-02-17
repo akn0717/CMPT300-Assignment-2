@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
         time(&raw_time);
         if (parsing_error)
         {
-            fprintf(stderr, "Incorrect syntax!\n");
+            fprintf(stderr, "Variable value expected \n");
             continue;
         }
         else if (!strcmp(command_argv[0],"exit"))

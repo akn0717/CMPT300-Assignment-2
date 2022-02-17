@@ -1,7 +1,7 @@
 $var=foo
 print $var
 pwd
+failure
 whoami
-ls
 theme red
-blabla
+log
