@@ -3,7 +3,7 @@
 int print_uppercase(char *str)
 {
     int n = strlen(str);
-    if (!syscall(sys_uppercase, str, n))
+    if (!syscall(SYS_UPCASE, str, n))
     {
         printf("%s\n", str);
         return 0;

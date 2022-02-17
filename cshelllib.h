@@ -13,7 +13,7 @@
 #define MAX_N_VARIABLE 50
 #define MAX_N_ARGUMENTS 50
 
-#define sys_uppercase 440
+#define SYS_UPCASE 440
 
 typedef struct command
 {

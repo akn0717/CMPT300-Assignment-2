@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "time.h": "c",
         "cshelllib.h": "c",
-        "syscall.h": "c"
+        "syscall.h": "c",
+        "types.h": "c"
     }
 }
