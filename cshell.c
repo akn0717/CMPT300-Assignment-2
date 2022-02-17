@@ -136,20 +136,35 @@ int main(int argc, char* argv[])
                 //if current process is a child
                 if (pid==0)
                 {
+                    //close the reading pipe
                     close(fds[0]);
+                    //redirect stdout_fileno and stderr_fileno to the writing pipe
                     dup2(fds[1], STDOUT_FILENO);
                     dup2(fds[1], STDERR_FILENO);
+
+                    //execute non built-in command
                     execvp(command_argv[0] , command_argv);
+                    
+                    //case if the command is not available
+                    //print error into the pipe for parent to catch
                     fprintf(stderr, "Missing keyword or command, or permission problem\n");
+
+                    //close writing pipe
                     close(fds[1]);
+
+                    //close the script file pointer in child that forked from the parent
                     fclose(fptr);
+
+                    //free all heap memory copied from the parent
                     free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
+                    
+                    //exit the child with error
                     exit(EXIT_FAILURE);
                 }
                 else if (pid>0) //current process is parent
                 {
                     char data[2] = "";
-                    //close  pipe
+                    //close writing side of pipe
                     close(fds[1]);
                     //parent reads from pipe
                     while (read(fds[0], data, 1) == 1)
@@ -162,8 +177,10 @@ int main(int argc, char* argv[])
                     //close pipe
                     close(fds[0]);
                 }
+                //error when child process cannot run or incorrect commands
                 if (error) error = 2;
-            } else error = 1;
+            } else error = 1;   //error if cannot create pipe
+
             return_value = error;
             if (return_value == 1)
             {
@@ -171,10 +188,13 @@ int main(int argc, char* argv[])
             }
         }
 
+        //change timer to local time
         time_info = localtime(&raw_time);
+        //add into the log list
         adding_log(comm_list, &comm_list_size, command_argv[0], *time_info, return_value);
     }
 
+    //free all allocated variables
     free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
     printf("Bye!\n");
     return 0;
