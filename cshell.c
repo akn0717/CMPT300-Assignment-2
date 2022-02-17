@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         // error if syntax is incorrect during new variable assignment
         if (parsing_error==1)
         {
-            fprintf(stderr, "Variable value expected \n");
+            printf("Variable value expected!\n");
             continue;
         }
 
@@ -85,19 +85,23 @@ int main(int argc, char* argv[])
             break;
         }
 
-        // function to assign variable valuey
+        // function to assign variable value
         else if (command_argv[0][0] == '$')
         {
             return_value = variable_assigning(variable_list, &varl_size, command_argv[0], command_argv[1]);
+
+            //push the value variable into the first args for easier logging
             strcat(command_argv[0], "=");
             strcat(command_argv[0], command_argv[1]);
         }
         else if (!strcmp(command_argv[0], "log"))
         {
+            //function to print log
             return_value = logging(comm_list, comm_list_size);
         }
         else if (!strcmp(command_argv[0], "print"))
         {
+            //function to print
             return_value = printing(variable_list, varl_size, command_argc, command_argv);
             if (return_value==1)
             {
@@ -106,6 +110,7 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(command_argv[0], "theme"))
         {
+            //function to change theme
             return_value = theming(command_argv[1]);
             if(return_value == 0)
             {
@@ -114,15 +119,21 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(command_argv[0], "uppercase"))
         {
+            //function to call syscall 440 (uppercase systemcall)
             return_value = print_uppercase(command_argv[1]);
         }
         else 
         {
+            //create pipe
             int fds[2];
             int error = pipe(fds);
+            //catch error if creating pipe has problem
             if (!error)
             {
+                //fork into 2 processes
                 pid_t pid = fork();
+
+                //if current process is a child
                 if (pid==0)
                 {
                     close(fds[0]);
@@ -135,15 +146,20 @@ int main(int argc, char* argv[])
                     free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
                     exit(EXIT_FAILURE);
                 }
-                else if (pid>0)
+                else if (pid>0) //current process is parent
                 {
-                    char buffer[2] = "";
+                    char data[2] = "";
+                    //close  pipe
                     close(fds[1]);
-                    while (read(fds[0], buffer, 1) == 1)
+                    //parent reads from pipe
+                    while (read(fds[0], data, 1) == 1)
                     {
-                        printf("%s", buffer);
+                        printf("%s", data);
                     }
+
+                    //wait for child
                     wait(&error);
+                    //close pipe
                     close(fds[0]);
                 }
                 if (error) error = 2;
@@ -158,7 +174,7 @@ int main(int argc, char* argv[])
         time_info = localtime(&raw_time);
         adding_log(comm_list, &comm_list_size, command_argv[0], *time_info, return_value);
     }
-    
+
     free_memory(comm_list, comm_list_size, variable_list, varl_size, command_argv, command_argc, buffer);
     printf("Bye!\n");
     return 0;
