@@ -190,6 +190,8 @@ int main(int argc, char* argv[])
             {
                 printf("Can't create pipe!\n");
             }
+            //case that incorrect command, then not record into the log
+            else if (return_value==2) continue;
         }
 
         //change timer to local time
