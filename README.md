@@ -1,2 +1,3 @@
-# Assignment 2 CMPT 300 - Cshell
+# CShell - CMPT 300 Project
 
+A simplified version of linux terminal writing in C
